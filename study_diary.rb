@@ -1,3 +1,5 @@
+require_relative 'study_item'
+
 def welcome
   'Bem-vindo ao Diário de Estudos, seu companheiro para estudar!'
 end
@@ -17,7 +19,7 @@ def register_study_item
   print 'Digite a categoria do seu item de estudo: '
   category  = gets.chomp
   puts "Item '#{title}' da categoria '#{category}' cadastrado com sucesso!"
-  { title: title, category: category }
+  StudyItem.new(title: title, category: category)
 end
 
 study_items = []
@@ -30,7 +32,7 @@ while option != 4
     study_items << register_study_item
   elsif option == 2
     study_items.each_with_index do |item, index|
-      puts "##{index + 1} - #{item[:title]} - #{item[:category]}"
+      puts "##{index + 1} - #{item.to_s}"
     end
     puts 'Nenhum item cadastrado' if study_items.empty?
   elsif option == 3
