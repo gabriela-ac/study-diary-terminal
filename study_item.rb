@@ -9,4 +9,8 @@ class StudyItem
   def to_s
     "#{title} - #{category}"
   end
+
+  def include?(term)
+    title.include?(term) || category.include?(term)
+  end
 end

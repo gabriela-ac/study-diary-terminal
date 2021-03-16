@@ -22,27 +22,34 @@ def register_study_item
   StudyItem.new(title: title, category: category)
 end
 
-study_items = []
+def print_items(collection)
+  collection.each.with_index(1) do |item, index|
+    puts "##{index} - #{item}"
+  end
+  puts 'Nenhum item encontrado' if collection.empty?
+end
+
+def search_items(collection)
+  print 'Digite uma palavra para procurar: '
+  term = gets.chomp
+  found_items = collection.filter do |item|
+    item.include?(term)
+  end
+  print_items(found_items)
+end
+
 puts welcome
 
+study_items = []
 option = menu
 
 while option != 4
   if option == 1
     study_items << register_study_item
   elsif option == 2
-    study_items.each_with_index do |item, index|
-      puts "##{index + 1} - #{item.to_s}"
-    end
-    puts 'Nenhum item cadastrado' if study_items.empty?
-  elsif option == 3
-    print 'Digite uma palavra para procurar: '
-    term = gets.chomp
-    found_items = study_items.filter do |item|
-      item[:title].include? term
-    end
-    puts found_items # fazer um print mais bonito
-    puts 'Nenhum item encontrado' if found_items.empty?
+    print_items(study_items)
+  elsif option == 3 # extrair para um método
+    search_items(study_items)
   else
     puts 'Opção inválida'
   end
