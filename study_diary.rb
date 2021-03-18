@@ -1,14 +1,20 @@
+require 'io/console'
 require_relative 'study_item'
+
+INSERT = 1
+VIEW = 2
+SEARCH = 3
+EXIT = 4
 
 def welcome
   'Bem-vindo ao Diário de Estudos, seu companheiro para estudar!'
 end
 
 def menu
-  puts '[1] Cadastrar um item para estudar'
-  puts '[2] Ver todos os itens cadastrados'
-  puts '[3] Buscar um item de estudo'
-  puts '[4] Sair'
+  puts "[#{INSERT}] Cadastrar um item para estudar"
+  puts "[#{VIEW}] Ver todos os itens cadastrados"
+  puts "[#{SEARCH}] Buscar um item de estudo"
+  puts "[#{EXIT}] Sair"
   print 'Escolha uma opção: '
   gets.to_i
 end
@@ -16,10 +22,11 @@ end
 def register_study_item
   print 'Digite o título do seu item de estudo: '
   title  = gets.chomp
-  print 'Digite a categoria do seu item de estudo: '
-  category  = gets.chomp
-  puts "Item '#{title}' da categoria '#{category}' cadastrado com sucesso!"
-  StudyItem.new(title: title, category: category)
+  print_items(Category.all)
+  print 'Escolha uma categoria para o seu item de estudo: '
+  category  = gets.to_i - 1
+  # puts "Item '#{title}' da categoria '#{category}' cadastrado com sucesso!"
+  StudyItem.new(title: title, category: Category.index(category))
 end
 
 def print_items(collection)
@@ -38,20 +45,39 @@ def search_items(collection)
   print_items(found_items)
 end
 
-puts welcome
+def clear
+  system('clear')
+end
 
-study_items = []
+def wait_keypress
+  puts
+  puts 'Pressione qualquer tecla para continuar'
+  STDIN.getch
+end
+
+def wait_and_clear
+  wait_keypress
+  clear
+end
+
+clear
+puts welcome
 option = menu
 
-while option != 4
-  if option == 1
-    study_items << register_study_item
-  elsif option == 2
-    print_items(study_items)
-  elsif option == 3 # extrair para um método
-    search_items(study_items)
+while option != EXIT
+  if option == INSERT
+    register_study_item
+    wait_and_clear
+  elsif option == VIEW
+    puts StudyItem.all
+    wait_keypress
+    clear
+  elsif option == SEARCH
+    search_items(StudyItem.all)
+    wait_and_clear
   else
     puts 'Opção inválida'
+    wait_and_clear
   end
   option = menu
 end
